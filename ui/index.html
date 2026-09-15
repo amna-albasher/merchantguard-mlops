@@ -1,0 +1,1235 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+  >
+  <title>MerchantGuard | Retention Workspace</title>
+
+  <style>
+    :root {
+      --page: #f4f6f8;
+      --surface: #ffffff;
+      --surface-soft: #f8fafc;
+      --border: #dfe4ea;
+      --border-dark: #cbd3dc;
+      --text: #18212f;
+      --muted: #667085;
+      --blue: #175cd3;
+      --blue-soft: #eff6ff;
+      --green: #15803d;
+      --green-soft: #edfdf3;
+      --amber: #b54708;
+      --amber-soft: #fffaeb;
+      --red: #b42318;
+      --red-soft: #fef3f2;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      color: var(--text);
+      background: var(--page);
+      font-family:
+        Inter, ui-sans-serif, system-ui, -apple-system,
+        BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+
+    button,
+    input,
+    select {
+      font: inherit;
+    }
+
+    .topbar {
+      height: 64px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 32px;
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 11px;
+    }
+
+    .brand-mark {
+      display: grid;
+      width: 34px;
+      height: 34px;
+      place-items: center;
+      color: white;
+      background: #1d2939;
+      border-radius: 7px;
+      font-size: 12px;
+      font-weight: 800;
+    }
+
+    .brand-name {
+      font-size: 17px;
+      font-weight: 700;
+    }
+
+    .brand-area {
+      margin-left: 10px;
+      padding-left: 14px;
+      color: var(--muted);
+      border-left: 1px solid var(--border);
+      font-size: 13px;
+    }
+
+    .topbar-status {
+      display: flex;
+      align-items: center;
+      gap: 18px;
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    .status-item {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+    }
+
+    .status-dot {
+      width: 7px;
+      height: 7px;
+      background: #22c55e;
+      border-radius: 50%;
+    }
+
+    .avatar {
+      display: grid;
+      width: 32px;
+      height: 32px;
+      place-items: center;
+      color: #344054;
+      background: #eef2f6;
+      border-radius: 50%;
+      font-size: 12px;
+      font-weight: 700;
+    }
+
+    main {
+      width: min(1420px, calc(100% - 48px));
+      margin: 0 auto;
+      padding: 30px 0 48px;
+    }
+
+    .page-heading {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 20px;
+      margin-bottom: 24px;
+    }
+
+    h1 {
+      margin: 0 0 5px;
+      font-size: 26px;
+      letter-spacing: -0.02em;
+    }
+
+    .page-heading p {
+      margin: 0;
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    .data-label {
+      padding: 7px 10px;
+      color: #475467;
+      background: #fff;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      font-size: 12px;
+      font-weight: 600;
+    }
+
+    .metrics {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 14px;
+      margin-bottom: 20px;
+    }
+
+    .metric-card {
+      padding: 17px 19px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 9px;
+    }
+
+    .metric-label {
+      margin-bottom: 8px;
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 600;
+    }
+
+    .metric-value {
+      font-size: 24px;
+      font-weight: 720;
+      letter-spacing: -0.02em;
+    }
+
+    .metric-detail {
+      margin-top: 4px;
+      color: var(--muted);
+      font-size: 11px;
+    }
+
+    .workspace {
+      display: grid;
+      grid-template-columns: minmax(600px, 1.25fr) minmax(420px, 0.75fr);
+      gap: 18px;
+      align-items: start;
+    }
+
+    .panel {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      overflow: hidden;
+    }
+
+    .panel-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 15px;
+      min-height: 68px;
+      padding: 15px 19px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .panel-title {
+      margin: 0 0 3px;
+      font-size: 15px;
+      font-weight: 700;
+    }
+
+    .panel-description {
+      margin: 0;
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    .model-badge {
+      padding: 6px 9px;
+      color: var(--blue);
+      background: var(--blue-soft);
+      border: 1px solid #cfe1ff;
+      border-radius: 6px;
+      font-size: 11px;
+      font-weight: 700;
+    }
+
+    .queue-toolbar {
+      display: flex;
+      gap: 10px;
+      padding: 14px 19px;
+      background: var(--surface-soft);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .search {
+      flex: 1;
+      padding: 9px 11px;
+      color: var(--text);
+      background: white;
+      border: 1px solid var(--border-dark);
+      border-radius: 6px;
+      outline: none;
+      font-size: 13px;
+    }
+
+    .filter-button {
+      padding: 9px 12px;
+      color: #344054;
+      background: white;
+      border: 1px solid var(--border-dark);
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 12px;
+      font-weight: 600;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    th {
+      padding: 11px 15px;
+      color: var(--muted);
+      background: #fcfcfd;
+      border-bottom: 1px solid var(--border);
+      text-align: left;
+      font-size: 11px;
+      font-weight: 650;
+      text-transform: uppercase;
+      letter-spacing: 0.03em;
+    }
+
+    td {
+      padding: 14px 15px;
+      border-bottom: 1px solid #edf0f3;
+      font-size: 13px;
+    }
+
+    tbody tr:hover {
+      background: #fafcff;
+    }
+
+    tbody tr:last-child td {
+      border-bottom: 0;
+    }
+
+    .merchant-name {
+      margin-bottom: 3px;
+      font-weight: 650;
+    }
+
+    .merchant-id {
+      color: var(--muted);
+      font-size: 11px;
+    }
+
+    .risk-pill {
+      display: inline-block;
+      min-width: 62px;
+      padding: 5px 8px;
+      border-radius: 999px;
+      text-align: center;
+      font-size: 11px;
+      font-weight: 700;
+    }
+
+    .risk-high {
+      color: var(--red);
+      background: var(--red-soft);
+    }
+
+    .risk-medium {
+      color: var(--amber);
+      background: var(--amber-soft);
+    }
+
+    .risk-low {
+      color: var(--green);
+      background: var(--green-soft);
+    }
+
+    .review-button {
+      padding: 7px 10px;
+      color: var(--blue);
+      background: white;
+      border: 1px solid #b9d2ff;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 11px;
+      font-weight: 700;
+    }
+
+    .review-button:hover {
+      background: var(--blue-soft);
+    }
+
+    .queue-note {
+      padding: 13px 19px;
+      color: var(--muted);
+      background: var(--surface-soft);
+      border-top: 1px solid var(--border);
+      font-size: 11px;
+    }
+
+    .assessment-content {
+      padding: 19px;
+    }
+
+    .score-summary {
+      padding: 16px;
+      background: var(--surface-soft);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+    }
+
+    .score-topline {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 12px;
+    }
+
+    .score-label {
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 600;
+    }
+
+    .score-number {
+      font-size: 26px;
+      font-weight: 750;
+    }
+
+    .risk-bar {
+      height: 8px;
+      overflow: hidden;
+      background: #e4e9ef;
+      border-radius: 999px;
+    }
+
+    .risk-bar-fill {
+      width: 0;
+      height: 100%;
+      background: var(--blue);
+      border-radius: inherit;
+      transition: width 0.35s ease;
+    }
+
+    .score-footer {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 9px;
+      color: var(--muted);
+      font-size: 11px;
+    }
+
+    .form-heading {
+      margin: 20px 0 13px;
+      font-size: 13px;
+      font-weight: 700;
+    }
+
+    .form-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 13px;
+    }
+
+    .field.full {
+      grid-column: 1 / -1;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 5px;
+      color: #475467;
+      font-size: 11px;
+      font-weight: 650;
+    }
+
+    input,
+    select {
+      width: 100%;
+      padding: 9px 10px;
+      color: var(--text);
+      background: white;
+      border: 1px solid var(--border-dark);
+      border-radius: 6px;
+      outline: none;
+      font-size: 12px;
+    }
+
+    input:focus,
+    select:focus {
+      border-color: #84adff;
+      box-shadow: 0 0 0 3px #eff4ff;
+    }
+
+    input[type="range"] {
+      padding: 4px 0;
+      accent-color: var(--blue);
+      box-shadow: none;
+    }
+
+    .range-labels {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 3px;
+      color: var(--muted);
+      font-size: 10px;
+    }
+
+    .primary-button {
+      width: 100%;
+      margin-top: 17px;
+      padding: 10px 14px;
+      color: white;
+      background: var(--blue);
+      border: 1px solid var(--blue);
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 13px;
+      font-weight: 700;
+    }
+
+    .primary-button:hover {
+      background: #154fb5;
+    }
+
+    .primary-button:disabled {
+      cursor: wait;
+      opacity: 0.65;
+    }
+
+    .signals {
+      margin-top: 18px;
+      padding-top: 16px;
+      border-top: 1px solid var(--border);
+    }
+
+    .signals-title {
+      margin-bottom: 10px;
+      font-size: 12px;
+      font-weight: 700;
+    }
+
+    .signal-list {
+      display: grid;
+      gap: 8px;
+      margin: 0;
+      padding: 0;
+      list-style: none;
+    }
+
+    .signal-list li {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      color: #475467;
+      font-size: 11px;
+    }
+
+    .signal-value {
+      font-weight: 700;
+    }
+
+    .empty-result {
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    @media (max-width: 1050px) {
+      .workspace {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 760px) {
+      .topbar {
+        padding: 0 18px;
+      }
+
+      .brand-area {
+        display: none;
+      }
+
+      main {
+        width: min(100% - 28px, 1420px);
+      }
+
+      .metrics {
+        grid-template-columns: 1fr 1fr;
+      }
+
+      .queue-panel {
+        overflow-x: auto;
+      }
+
+      table {
+        min-width: 650px;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .metrics,
+      .form-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .field.full {
+        grid-column: auto;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <header class="topbar">
+    <div class="brand">
+      <div class="brand-mark">MG</div>
+      <div class="brand-name">MerchantGuard</div>
+      <div class="brand-area">Customer Success</div>
+    </div>
+
+    <div class="topbar-status">
+      <div class="status-item">
+        <span class="status-dot"></span>
+        <span id="api-status">Connecting</span>
+      </div>
+
+      <div class="avatar">AH</div>
+    </div>
+  </header>
+
+  <main>
+    <section class="page-heading">
+      <div>
+        <h1>Retention workspace</h1>
+        <p>
+          Review merchant risk signals and prioritize outreach.
+        </p>
+      </div>
+
+      <div class="data-label">
+        Synthetic demonstration data
+      </div>
+    </section>
+
+    <section class="metrics">
+      <article class="metric-card">
+        <div class="metric-label">Accounts monitored</div>
+        <div class="metric-value">2,000</div>
+        <div class="metric-detail">
+          Across three subscription tiers
+        </div>
+      </article>
+
+      <article class="metric-card">
+        <div class="metric-label">PR-AUC</div>
+        <div class="metric-value">70.7%</div>
+        <div class="metric-detail">
+          Time-based validation set
+        </div>
+      </article>
+
+      <article class="metric-card">
+        <div class="metric-label">Top-decile capture</div>
+        <div class="metric-value">59.8%</div>
+        <div class="metric-detail">
+          Churners found in top 10%
+        </div>
+      </article>
+
+      <article class="metric-card">
+        <div class="metric-label">Production model</div>
+        <div class="metric-value" id="metric-model">v3</div>
+        <div class="metric-detail">
+          Champion alias · validated
+        </div>
+      </article>
+    </section>
+
+    <section class="workspace">
+      <div class="panel queue-panel">
+        <div class="panel-header">
+          <div>
+            <div class="panel-title">
+              Merchant risk queue
+            </div>
+            <p class="panel-description">
+              Accounts prioritized for Customer Success review.
+            </p>
+          </div>
+
+          <span class="model-badge" id="model-badge">
+            Champion v3
+          </span>
+        </div>
+
+        <div class="queue-toolbar">
+          <input
+            class="search"
+            type="search"
+            placeholder="Search merchant ID or account"
+          >
+
+          <button class="filter-button" type="button">
+            All risk levels
+          </button>
+        </div>
+
+        <table>
+          <thead>
+            <tr>
+              <th>Merchant</th>
+              <th>Plan</th>
+              <th>Logins</th>
+              <th>Adoption</th>
+              <th>Risk</th>
+              <th></th>
+            </tr>
+          </thead>
+
+          <tbody>
+            <tr>
+              <td>
+                <div class="merchant-name">
+                  Cedar Retail Group
+                </div>
+                <div class="merchant-id">MER-1047</div>
+              </td>
+              <td>Growth</td>
+              <td>2 / week</td>
+              <td>25%</td>
+              <td>
+                <span class="risk-pill risk-high">
+                  High
+                </span>
+              </td>
+              <td>
+                <button
+                  class="review-button"
+                  onclick="loadAccount('risk')"
+                >
+                  Review
+                </button>
+              </td>
+            </tr>
+
+            <tr>
+              <td>
+                <div class="merchant-name">
+                  Northline Stores
+                </div>
+                <div class="merchant-id">MER-0812</div>
+              </td>
+              <td>Professional</td>
+              <td>6 / week</td>
+              <td>42%</td>
+              <td>
+                <span class="risk-pill risk-medium">
+                  Medium
+                </span>
+              </td>
+              <td>
+                <button
+                  class="review-button"
+                  onclick="loadAccount('medium')"
+                >
+                  Review
+                </button>
+              </td>
+            </tr>
+
+            <tr>
+              <td>
+                <div class="merchant-name">
+                  Horizon Commerce
+                </div>
+                <div class="merchant-id">MER-1624</div>
+              </td>
+              <td>Growth</td>
+              <td>8 / week</td>
+              <td>51%</td>
+              <td>
+                <span class="risk-pill risk-medium">
+                  Medium
+                </span>
+              </td>
+              <td>
+                <button
+                  class="review-button"
+                  onclick="loadAccount('mediumTwo')"
+                >
+                  Review
+                </button>
+              </td>
+            </tr>
+
+            <tr>
+              <td>
+                <div class="merchant-name">
+                  Summit Department Stores
+                </div>
+                <div class="merchant-id">MER-0339</div>
+              </td>
+              <td>Enterprise</td>
+              <td>18 / week</td>
+              <td>85%</td>
+              <td>
+                <span class="risk-pill risk-low">
+                  Low
+                </span>
+              </td>
+              <td>
+                <button
+                  class="review-button"
+                  onclick="loadAccount('healthy')"
+                >
+                  Review
+                </button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+
+        <div class="queue-note">
+          Risk queue entries are synthetic and provided for
+          demonstration purposes.
+        </div>
+      </div>
+
+      <aside class="panel">
+        <div class="panel-header">
+          <div>
+            <div class="panel-title">
+              Account assessment
+            </div>
+            <p class="panel-description">
+              Review or adjust the latest activity signals.
+            </p>
+          </div>
+        </div>
+
+        <div class="assessment-content">
+          <div class="score-summary">
+            <div class="score-topline">
+              <div>
+                <div class="score-label">
+                  Three-month churn risk
+                </div>
+                <div class="score-number" id="score-number">
+                  —
+                </div>
+              </div>
+
+              <span
+                class="risk-pill"
+                id="result-badge"
+              >
+                Not assessed
+              </span>
+            </div>
+
+            <div class="risk-bar">
+              <div
+                class="risk-bar-fill"
+                id="risk-bar-fill"
+              ></div>
+            </div>
+
+            <div class="score-footer">
+              <span>0%</span>
+              <span>Decision threshold: 30%</span>
+              <span>100%</span>
+            </div>
+          </div>
+
+          <div class="form-heading">
+            Latest account signals
+          </div>
+
+          <form id="prediction-form">
+            <div class="form-grid">
+              <div class="field">
+                <label for="merchant_id">Merchant ID</label>
+                <input
+                  id="merchant_id"
+                  value="MER-1047"
+                  required
+                >
+              </div>
+
+              <div class="field">
+                <label for="plan_tier">Plan</label>
+                <select id="plan_tier">
+                  <option>Growth</option>
+                  <option>Professional</option>
+                  <option>Enterprise</option>
+                </select>
+              </div>
+
+              <div class="field">
+                <label for="annual_contract_value">
+                  Annual contract value
+                </label>
+                <input
+                  id="annual_contract_value"
+                  type="number"
+                  min="10000"
+                  max="50000"
+                  value="12000"
+                  required
+                >
+              </div>
+
+              <div class="field">
+                <label for="logins_per_week">
+                  Weekly logins
+                </label>
+                <input
+                  id="logins_per_week"
+                  type="number"
+                  min="0"
+                  max="50"
+                  step="0.1"
+                  value="2"
+                  required
+                >
+              </div>
+
+              <div class="field">
+                <label for="feature_adoption_pct">
+                  Feature adoption %
+                </label>
+                <input
+                  id="feature_adoption_pct"
+                  type="number"
+                  min="0"
+                  max="100"
+                  step="0.1"
+                  value="25"
+                  required
+                >
+              </div>
+
+              <div class="field">
+                <label for="support_tickets">
+                  Support tickets
+                </label>
+                <input
+                  id="support_tickets"
+                  type="number"
+                  min="0"
+                  value="7"
+                  required
+                >
+              </div>
+
+              <div class="field full">
+                <label for="support_sentiment">
+                  Support sentiment:
+                  <span id="sentiment-value">-0.7</span>
+                </label>
+
+                <input
+                  id="support_sentiment"
+                  type="range"
+                  min="-1"
+                  max="1"
+                  step="0.1"
+                  value="-0.7"
+                >
+
+                <div class="range-labels">
+                  <span>Negative</span>
+                  <span>Positive</span>
+                </div>
+              </div>
+
+              <div class="field full">
+                <label for="product_release_event">
+                  Product release period
+                </label>
+
+                <select id="product_release_event">
+                  <option value="0">No</option>
+                  <option value="1">Yes</option>
+                </select>
+              </div>
+            </div>
+
+            <button
+              class="primary-button"
+              id="submit-button"
+              type="submit"
+            >
+              Run assessment
+            </button>
+          </form>
+
+          <div class="signals">
+            <div class="signals-title">
+              Observed signals
+            </div>
+
+            <ul class="signal-list" id="signal-list">
+              <li class="empty-result">
+                Run an assessment to review account signals.
+              </li>
+            </ul>
+          </div>
+        </div>
+      </aside>
+    </section>
+  </main>
+
+  <script>
+    const accounts = {
+      risk: {
+        merchant_id: "MER-1047",
+        plan_tier: "Growth",
+        annual_contract_value: 12000,
+        logins_per_week: 2,
+        feature_adoption_pct: 25,
+        support_tickets: 7,
+        support_sentiment: -0.7,
+        product_release_event: 0
+      },
+      medium: {
+        merchant_id: "MER-0812",
+        plan_tier: "Professional",
+        annual_contract_value: 28000,
+        logins_per_week: 6,
+        feature_adoption_pct: 42,
+        support_tickets: 4,
+        support_sentiment: -0.2,
+        product_release_event: 0
+      },
+      mediumTwo: {
+        merchant_id: "MER-1624",
+        plan_tier: "Growth",
+        annual_contract_value: 16500,
+        logins_per_week: 8,
+        feature_adoption_pct: 51,
+        support_tickets: 3,
+        support_sentiment: 0.1,
+        product_release_event: 0
+      },
+      healthy: {
+        merchant_id: "MER-0339",
+        plan_tier: "Enterprise",
+        annual_contract_value: 45000,
+        logins_per_week: 18,
+        feature_adoption_pct: 85,
+        support_tickets: 0,
+        support_sentiment: 0.8,
+        product_release_event: 0
+      }
+    };
+
+    const form = document.getElementById(
+      "prediction-form"
+    );
+
+    const sentiment = document.getElementById(
+      "support_sentiment"
+    );
+
+    sentiment.addEventListener("input", () => {
+      document.getElementById(
+        "sentiment-value"
+      ).textContent = sentiment.value;
+    });
+
+    async function loadHealth() {
+      try {
+        const response = await fetch("/health");
+        const health = await response.json();
+
+        document.getElementById(
+          "api-status"
+        ).textContent = "API healthy";
+
+        document.getElementById(
+          "model-badge"
+        ).textContent =
+          `Champion v${health.model_version}`;
+
+        document.getElementById(
+          "metric-model"
+        ).textContent =
+          `v${health.model_version}`;
+      } catch {
+        document.getElementById(
+          "api-status"
+        ).textContent = "API unavailable";
+      }
+    }
+
+    function setField(id, value) {
+      document.getElementById(id).value = value;
+    }
+
+    function loadAccount(accountName) {
+      const account = accounts[accountName];
+
+      Object.entries(account).forEach(
+        ([key, value]) => setField(key, value)
+      );
+
+      document.getElementById(
+        "sentiment-value"
+      ).textContent = account.support_sentiment;
+
+      runAssessment(account);
+    }
+
+    function getPayload() {
+      return {
+        merchant_id:
+          document.getElementById("merchant_id").value,
+        plan_tier:
+          document.getElementById("plan_tier").value,
+        annual_contract_value: Number(
+          document.getElementById(
+            "annual_contract_value"
+          ).value
+        ),
+        logins_per_week: Number(
+          document.getElementById(
+            "logins_per_week"
+          ).value
+        ),
+        feature_adoption_pct: Number(
+          document.getElementById(
+            "feature_adoption_pct"
+          ).value
+        ),
+        support_tickets: Number(
+          document.getElementById(
+            "support_tickets"
+          ).value
+        ),
+        support_sentiment: Number(sentiment.value),
+        product_release_event: Number(
+          document.getElementById(
+            "product_release_event"
+          ).value
+        )
+      };
+    }
+
+    function renderSignals(payload) {
+      const values = [
+        [
+          "Weekly engagement",
+          payload.logins_per_week < 5
+            ? "Low"
+            : payload.logins_per_week < 10
+            ? "Watch"
+            : "Healthy"
+        ],
+        [
+          "Feature adoption",
+          payload.feature_adoption_pct < 40
+            ? "Low"
+            : payload.feature_adoption_pct < 60
+            ? "Watch"
+            : "Healthy"
+        ],
+        [
+          "Support pressure",
+          payload.support_tickets >= 5
+            ? "Elevated"
+            : "Normal"
+        ],
+        [
+          "Customer sentiment",
+          payload.support_sentiment < 0
+            ? "Negative"
+            : "Positive"
+        ]
+      ];
+
+      document.getElementById(
+        "signal-list"
+      ).innerHTML = values.map(
+        ([label, value]) =>
+          `<li><span>${label}</span>` +
+          `<span class="signal-value">${value}</span></li>`
+      ).join("");
+    }
+
+    function renderResult(result) {
+      const percentage = Math.round(
+        result.churn_probability * 100
+      );
+
+      const styles = {
+        low: {
+          color: "#15803d",
+          className: "risk-low"
+        },
+        medium: {
+          color: "#b54708",
+          className: "risk-medium"
+        },
+        high: {
+          color: "#b42318",
+          className: "risk-high"
+        }
+      };
+
+      const style = styles[result.risk_level];
+
+      document.getElementById(
+        "score-number"
+      ).textContent = `${percentage}%`;
+
+      const badge = document.getElementById(
+        "result-badge"
+      );
+
+      badge.className =
+        `risk-pill ${style.className}`;
+
+      badge.textContent =
+        `${result.risk_level} risk`;
+
+      const bar = document.getElementById(
+        "risk-bar-fill"
+      );
+
+      bar.style.width = `${percentage}%`;
+      bar.style.background = style.color;
+    }
+
+    async function runAssessment(payload) {
+      const button = document.getElementById(
+        "submit-button"
+      );
+
+      button.disabled = true;
+      button.textContent = "Running assessment...";
+
+      try {
+        const response = await fetch("/predict", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify(payload)
+        });
+
+        if (!response.ok) {
+          throw new Error("Prediction failed");
+        }
+
+        const result = await response.json();
+
+        renderResult(result);
+        renderSignals(payload);
+      } catch {
+        alert(
+          "The assessment could not be completed. " +
+          "Check that the API is running."
+        );
+      } finally {
+        button.disabled = false;
+        button.textContent = "Run assessment";
+      }
+    }
+
+    form.addEventListener("submit", event => {
+      event.preventDefault();
+      runAssessment(getPayload());
+    });
+
+    loadHealth();
+  </script>
+</body>
+</html>
