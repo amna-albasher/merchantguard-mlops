@@ -37,6 +37,12 @@ jobs:
       - name: Generate synthetic dataset
         run: python src/generate_data.py
 
+      - name: Generate drifted dataset
+        run: python monitoring/evidently/generate_drifted_data.py
+
+      - name: Run drift monitoring and automatic retraining
+        run: python monitoring/evidently/drift_report.py
+
       - name: Train candidate model
         run: python src/train_model.py
 

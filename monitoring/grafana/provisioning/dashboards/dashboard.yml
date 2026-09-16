@@ -1,0 +1,11 @@
+apiVersion: 1
+
+providers:
+  - name: MerchantGuard
+    orgId: 1
+    folder: MerchantGuard
+    type: file
+    disableDeletion: false
+    editable: true
+    options:
+      path: /var/lib/grafana/dashboards

@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
         - name: merchantguard-api
-          image: merchantguard-api:v3
+          image: merchantguard-api:v4
           imagePullPolicy: Never
           ports:
             - containerPort: 8000
