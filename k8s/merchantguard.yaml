@@ -14,8 +14,8 @@ spec:
     spec:
       containers:
         - name: merchantguard-api
-          image: merchantguard-api:v4
-          imagePullPolicy: Never
+          image: ghcr.io/amna-albasher/merchantguard-api:latest
+          imagePullPolicy: Always
           ports:
             - containerPort: 8000
           readinessProbe:

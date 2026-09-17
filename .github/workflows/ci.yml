@@ -1,4 +1,4 @@
-name: MerchantGuard CI
+name: MerchantGuard CI/CD
 
 on:
   push:
@@ -99,3 +99,58 @@ jobs:
 
           docker logs merchantguard-ci
           exit 1
+
+  deploy:
+    name: Deploy to local Kubernetes
+    needs: test-validate-build
+    if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/main' }}
+    runs-on: self-hosted
+    timeout-minutes: 10
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v7
+
+      - name: Apply Kubernetes configuration
+        shell: powershell
+        run: |
+          kubectl apply -f k8s/merchantguard.yaml
+
+      - name: Deploy new image
+        shell: powershell
+        run: |
+          kubectl set image deployment/merchantguard-api merchantguard-api=ghcr.io/amna-albasher/merchantguard-api:${{ github.sha }}
+
+      - name: Wait for Kubernetes rollout
+        shell: powershell
+        run: |
+          kubectl rollout status deployment/merchantguard-api --timeout=180s
+
+      - name: Verify Kubernetes deployment
+        shell: powershell
+        run: |
+          kubectl get pods
+          kubectl get service merchantguard-service
+
+      - name: Verify deployed API health
+        shell: powershell
+        run: |
+          $portForward = Start-Process `
+            -FilePath "kubectl" `
+            -ArgumentList "port-forward","service/merchantguard-service","18001:80" `
+            -PassThru `
+            -WindowStyle Hidden
+
+          try {
+            Start-Sleep -Seconds 5
+
+            $response = Invoke-RestMethod `
+              -Uri "http://127.0.0.1:18001/health" `
+              -Method Get
+
+            Write-Host "MerchantGuard health check passed:"
+            Write-Host ($response | ConvertTo-Json -Compress)
+          }
+          finally {
+            Stop-Process -Id $portForward.Id -Force -ErrorAction SilentlyContinue
+          }
